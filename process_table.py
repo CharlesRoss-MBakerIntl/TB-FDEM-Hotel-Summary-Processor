@@ -3,6 +3,7 @@ import requests
 import traceback
 import os
 import json
+import boto3
 import pandas as pd
 from dotenv import load_dotenv
 from github_python_fetch import fetch_function
@@ -24,8 +25,6 @@ active_folder = os.getenv('ACTIVEFOLDER')    # AWS S3 Project Active Folder Path
 archive_folder = os.getenv('ARCHIVEFOLDER')     # AWS S3 Project Archive Folder Path
 
 
-
-import json
 
 def process_table(event, context):
 
@@ -72,7 +71,7 @@ def process_table(event, context):
 
     # Connect to AWS RDS Database
     try:
-        #conn, cursor = rds_connection(username, password, db, server) # Connect to RDS Database
+        conn, cursor = rds_connection(username, password, db, server) # Connect to RDS Database
         pass
 
     except Exception as e:
@@ -88,19 +87,40 @@ def process_table(event, context):
 
     except Exception as e:
         print(traceback.print_exc())
-        raise Exception(f"Failed to Produce RDS Table from RDSTablePull in rds_connector.py") from e 
-    
+        raise Exception(f"Failed to Produce RDS Table from RDSTablePull in rds_connector.py") from e
+
+
+
+    #----------------------------------------------------------------
+
+    # Create a Boto3 client for S3
+    try:
+        s3 = boto3.client(
+            's3',
+            aws_access_key_id=access,
+            aws_secret_access_key=secret
+        )
+
+    except Exception as e:
+        print(traceback.print_exc())
+        raise Exception(f"Failed to Connect to S3 with Secret and Access Key") from e
+        
 
 
     #----------------------------------------------------------------
 
     # Add Active File to Project S3
     try:
-        rds = RDSTablePull(conn, cursor, query_package) # Create Instance of RDS Table
+        update_active_data(s3 = s3, 
+                           bucket = bucket, 
+                           project_folder = project_folder, 
+                           active_folder = active_folder, 
+                           file_name = "Active-FDEM-Hotem-Summary.csv", 
+                           data = rds.df)
 
     except Exception as e:
         print(traceback.print_exc())
-        raise Exception(f"Failed to Produce RDS Table from RDSTablePull in rds_connector.py") from e 
+        raise Exception(f"Failed to Update Active Data for {project_folder}") from e 
     
 
 
@@ -109,11 +129,16 @@ def process_table(event, context):
 
     # Add Archive Versions to Project S3
     try:
-        rds = RDSTablePull(conn, cursor, query_package) # Create Instance of RDS Table
+        add_archive_folder(s3 = s3, 
+                           bucket = bucket, 
+                           project_folder = project_folder, 
+                           archive_folder = archive_folder, 
+                           limit = 30,
+                           versions = rds.cleaning_versions)
 
     except Exception as e:
         print(traceback.print_exc())
-        raise Exception(f"Failed to Produce RDS Table from RDSTablePull in rds_connector.py") from e 
+        raise Exception(f"Failed to Add Archive Folder for {project_folder}") from e 
     
     
     
