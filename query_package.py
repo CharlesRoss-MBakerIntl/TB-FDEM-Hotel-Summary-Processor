@@ -19,7 +19,7 @@ join_list = [
      'data_source': 'application_data_textboxanswer',
      'question_id': 1015,
      'fields' : [{'value':'hotel_name'}],
-     'clean' : [{'hotel_name': ['NULL']}]
+     'clean' : []
     },
 
     {'name': 'hotel_address',
@@ -33,10 +33,7 @@ join_list = [
                  'city' : 'hotel_city',
                  'state': 'hotel_state',
                  'zip' : 'hotel_zip'}],
-     'clean' : [{'hotel_address_line_1': ['NULL']},
-                {'hotel_city': ['NULL']},
-                {'hotel_state': ['NULL']},
-                {'hotel_zip': ['NULL']}]
+     'clean' : []
     },
 
     {'name': 'hotel_status',
@@ -76,7 +73,27 @@ join_list = [
      'data_source': 'application_data_numberanswer',
      'question_id': 596,
      'fields': [{'value':'total_in_household'}],
-     'clean' : [{'total_in_household': ['INT_CONVERT']}]
+     'clean' : []
+    },
+
+    {'name': 'active_bookings',
+     'question_source': 'JOIN_SOURCE',
+     'source_id': 'id',
+     'join_id': 'application_id',
+     'data_source': 'application_data_numberanswer',
+     'question_id': 1010,
+     'fields': [{'value':'active_bookings'}],
+     'clean' : []
+    },
+
+    {'name': 'pathway_determination',
+     'question_source': 'JOIN_SOURCE',
+     'source_id': 'id',
+     'join_id': 'application_id',
+     'data_source': 'application_data_singleselectanswer',
+     'question_id': 632,
+     'fields': [{'value':'pathway_determination'}],
+     'clean' : []
     }
 ]
 

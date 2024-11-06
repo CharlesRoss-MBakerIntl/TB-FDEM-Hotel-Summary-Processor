@@ -83,7 +83,7 @@ def process_table(event, context):
 
     # Create Instance of RDS Table
     try:
-        rds = RDSTablePull(conn, cursor, query_package) # Create Instance of RDS Table
+        rds = RDS(conn, cursor, query_package) # Create Instance of RDS Table
 
     except Exception as e:
         print(traceback.print_exc())
@@ -115,7 +115,7 @@ def process_table(event, context):
                            bucket = bucket, 
                            project_folder = project_folder, 
                            active_folder = active_folder, 
-                           file_name = "Active-FDEM-Hotem-Summary.csv", 
+                           file_name = "Active-FDEM-Hotel-Summary.csv", 
                            data = rds.df)
 
     except Exception as e:
@@ -133,7 +133,7 @@ def process_table(event, context):
                            bucket = bucket, 
                            project_folder = project_folder, 
                            archive_folder = archive_folder, 
-                           limit = 30,
+                           limit = 50,
                            versions = rds.cleaning_versions)
 
     except Exception as e:
