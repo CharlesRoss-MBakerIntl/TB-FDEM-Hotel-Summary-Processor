@@ -32,7 +32,7 @@ def copy_python_files(lambda_folder):
     create_folder(lambda_folder)
     current_dir = os.path.dirname(os.path.abspath(__file__))
     for item in os.listdir(current_dir):
-        if item.endswith('.py'):
+        if item.endswith('.py') and item != 'package_for_lambda.py':
             shutil.copy(item, lambda_folder)
 
 def zip_folder(folder_path, zip_file_path):

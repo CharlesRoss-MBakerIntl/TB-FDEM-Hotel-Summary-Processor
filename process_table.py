@@ -5,7 +5,7 @@ import os
 import json
 import boto3
 import pandas as pd
-from dotenv import load_dotenv
+#from dotenv import load_dotenv #UNCOMMNET TO GET VARIABLES FROM LOCAL ENVIRONMENT
 from github_python_fetch import fetch_function
 from query_package import get_query_package
 
